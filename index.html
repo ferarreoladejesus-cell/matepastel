@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#f5e4f2"><meta name="description" content="Ruta diagnóstica y de aprendizaje de matemáticas para bachillerato.">
+<link rel="manifest" href="manifest.json"><title>MatePastel | Tu ruta de matemáticas</title>
+<style>
+:root{--ink:#414057;--muted:#77758c;--pink:#f5dce9;--lav:#e8e0fa;--mint:#dcf2e8;--blue:#deeffb;--yellow:#fff1cf;--accent:#8b70c1;--line:#eee8f1;--good:#34876b;--bad:#bd6478;font-family:Inter,"Trebuchet MS",system-ui,sans-serif}
+*{box-sizing:border-box}body{margin:0;background:linear-gradient(135deg,#fff9fc,#f5f2ff 55%,#effaf5);color:var(--ink);min-height:100vh}
+header{text-align:center;padding:24px 16px 16px}.logo{display:inline-flex;gap:8px;align-items:center;padding:8px 15px;border-radius:99px;background:#ffffffc9;color:#8066b4;font-weight:900}
+h1{font-size:clamp(2rem,6vw,3rem);margin:13px 0 5px;letter-spacing:-1px}header p{margin:0;color:var(--muted)}
+main{max-width:1100px;margin:auto;padding:0 16px 40px}.card{background:#ffffffdf;border:1px solid var(--line);border-radius:22px;padding:19px;box-shadow:0 8px 26px #6e5a8910;margin-bottom:15px}
+h2{font-size:1.12rem;margin:0 0 12px}.small{font-size:.83rem;color:var(--muted)}.row{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}.stat{background:#f8f4fc;padding:11px;border-radius:15px;text-align:center}.stat b{display:block;font-size:1.35rem}.stat span{font-size:.75rem;color:var(--muted)}
+.bar{height:10px;border-radius:20px;background:#eee9f4;overflow:hidden;margin:9px 0}.bar div{height:100%;width:0;background:linear-gradient(90deg,#c8b5ee,#9bd7c1);transition:width .25s}
+.btn{border:0;border-radius:13px;padding:11px 15px;font:inherit;font-weight:800;cursor:pointer}.primary{background:var(--accent);color:white}.soft{background:#f0eafa;color:#7259a8}.topic-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}
+.topic{border:1px solid var(--line);border-radius:15px;background:#fff;padding:12px;text-align:left;color:var(--ink);cursor:pointer}.topic.active{outline:2px solid #a58bd8;background:#faf7ff}.topic:disabled{opacity:.45;cursor:not-allowed}.topic strong{display:block}.topic small{display:block;color:var(--muted);margin-top:4px}
+input,select{font:inherit;border:1px solid #ded7e8;border-radius:12px;padding:11px;background:#fff;color:var(--ink);min-width:0}.answer{display:flex;gap:8px;max-width:500px;margin:auto}.answer input{flex:1;width:100%}
+.question{font-size:clamp(1.65rem,5vw,2.4rem);font-weight:900;text-align:center;margin:20px 0}.feedback{text-align:center;min-height:28px;font-weight:800;margin:12px 0}.explain{background:#f7f4fc;border-radius:14px;padding:13px;margin-top:12px;line-height:1.5}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}.tab{border:0;border-radius:99px;padding:9px 13px;background:#f0edf5;color:#665d79;font-weight:700;cursor:pointer}.tab.active{background:#e9def9;color:#7658ad}
+.routine{display:grid;gap:8px}.routine label{background:#f2faf6;padding:11px;border-radius:12px;display:flex;gap:9px;align-items:center}.routine input{accent-color:#7ebda6}
+.lesson{line-height:1.55;background:#fff9ee;border-radius:14px;padding:13px;margin-top:10px}.lesson h3{margin:0 0 6px;font-size:1rem}
+.hidden{display:none!important}.pill{display:inline-block;padding:5px 9px;border-radius:99px;background:#f2eafa;color:#7658ad;font-size:.75rem;font-weight:800}
+footer{text-align:center;color:var(--muted);font-size:.8rem;padding:16px}
+@media(max-width:760px){.topic-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:430px){.topic-grid{grid-template-columns:1fr}.stats{gap:6px}}
+</style></head>
+<body>
+<header><div class="logo">🌷 MATEPASTEL ✦</div><h1>Tu ruta de matemáticas</h1><p>Primero lo básico, después todo lo que puedes lograr. 💜</p></header>
+<main>
+<section class="card">
+ <div class="row"><h2>🌟 Mi avance</h2><span class="small" id="dateLabel"></span></div>
+ <div class="stats"><div class="stat"><b id="points">0</b><span>puntos</span></div><div class="stat"><b id="correct">0</b><span>aciertos</span></div><div class="stat"><b id="streak">0</b><span>días de racha</span></div></div>
+ <div class="row" style="margin-top:15px"><b id="stageName">Introducción: diagnóstico</b><span class="small" id="progressText">0%</span></div><div class="bar"><div id="progressBar"></div></div>
+ <p class="small" id="routeMessage">Comienza con una evaluación diagnóstica para conocer tu punto de partida.</p>
+</section>
+
+<section class="card" id="welcome">
+ <h2>🌱 ¡Bienvenida/o a MatePastel!</h2>
+ <p>Antes de entrar a los temas de preparatoria, vamos a repasar las bases: operaciones, decimales, fracciones, porcentajes y más. Primero responderás una evaluación corta. Según tus resultados, te recomendaremos por dónde comenzar.</p>
+ <p class="small">No es un examen para juzgarte: sirve para descubrir qué ya dominas y qué conviene practicar. Puedes equivocarte sin problema.</p>
+ <button class="btn primary" id="startDiagnostic">Comenzar diagnóstico ✨</button>
+</section>
+
+<section class="card hidden" id="diagnostic">
+ <div class="row"><h2>🧩 Evaluación diagnóstica</h2><span class="pill" id="diagCount">Pregunta 1 de 15</span></div>
+ <p class="small">Responde sin calculadora si puedes. Si no recuerdas algo, intenta lo que sepas.</p>
+ <div class="bar"><div id="diagBar"></div></div>
+ <div class="question" id="diagQuestion"></div>
+ <div class="answer"><input id="diagAnswer" type="number" step="any" inputmode="decimal" placeholder="Tu respuesta"><button class="btn primary" id="diagCheck">Responder</button></div>
+ <div class="feedback" id="diagFeedback" aria-live="polite"></div>
+ <div class="row"><span class="small" id="diagHint">Tómate tu tiempo.</span><button class="btn soft" id="diagNext" disabled>Siguiente →</button></div>
+</section>
+
+<section class="card hidden" id="diagnosticResult">
+ <h2>🎉 Tu punto de partida</h2><div class="stats"><div class="stat"><b id="diagScore">0/15</b><span>respuestas correctas</span></div><div class="stat"><b id="diagPercent">0%</b><span>resultado</span></div><div class="stat"><b id="diagBand">Inicial</b><span>ruta sugerida</span></div></div>
+ <p id="diagAdvice"></p><button class="btn primary" id="goToRoute">Ver mi ruta de aprendizaje →</button>
+</section>
+
+<section class="card hidden" id="learning">
+ <div class="row"><h2>📚 Ruta de aprendizaje</h2><span class="pill" id="currentStage">Nivelación</span></div>
+ <p class="small">Completa los temas en orden. Los semestres se desbloquean progresivamente; también puedes repasar los temas anteriores.</p>
+ <div class="topic-grid" id="topicList"></div>
+</section>
+
+<section class="card hidden" id="study">
+ <div class="row"><h2>🧠 Estudia y practica</h2><span class="small" id="exerciseNo">Ejercicio 1</span></div>
+ <div class="tabs"><button class="tab active" id="practiceTab">Práctica</button><button class="tab" id="lessonTab">Explicación</button></div>
+ <div id="practicePanel">
+  <p class="small" id="topicDescription"></p><div class="question" id="question"></div>
+  <div class="answer"><input id="answer" type="number" step="any" inputmode="decimal" placeholder="Escribe tu respuesta"><button class="btn primary" id="check">Comprobar</button></div>
+  <div class="feedback" id="feedback" aria-live="polite"></div>
+  <div class="row"><span class="small">💡 Revisa tu procedimiento después de responder.</span><button class="btn soft" id="next" disabled>Siguiente →</button></div>
+  <div class="explain hidden" id="solution"></div>
+ </div>
+ <div id="lessonPanel" class="hidden"><div class="lesson"><h3 id="lessonTitle"></h3><p id="lessonText"></p><p class="small" id="lessonExample"></p></div><button class="btn primary" id="backPractice" style="margin-top:12px">Practicar este tema</button></div>
+</section>
+
+<section class="card">
+ <h2>🌷 Mi hábito de hoy</h2><p class="small">Marca lo que lograste y guarda tu rutina.</p>
+ <div class="routine">
+ <label><input type="checkbox" class="habit"> Preparé mi espacio de estudio</label>
+ <label><input type="checkbox" class="habit"> Practiqué de 15 a 25 minutos</label>
+ <label><input type="checkbox" class="habit"> Intenté resolver antes de mirar la explicación</label>
+ <label><input type="checkbox" class="habit"> Revisé mis errores</label></div>
+ <div class="row" style="margin-top:10px"><span class="small" id="habitCount">0 de 4 completados</span><button class="btn soft" id="saveHabit">Guardar rutina</button></div>
+</section>
+<section class="card"><h2>📈 Mi resumen</h2><p class="small" id="summary">Tus resultados aparecerán aquí mientras avanzas.</p><button class="btn soft" id="reset">Reiniciar progreso</button><p class="small">El progreso se guarda localmente en este dispositivo y navegador.</p></section>
+</main>
+<footer>MatePastel · Recurso de apoyo para educación media superior · Aprende a tu ritmo 🌷</footer>
+<script>
+(()=>{
+const $=id=>document.getElementById(id), KEY="matepastel-route-v3", today=()=>new Date().toISOString().slice(0,10);
+const basics=[
+{id:"sum",stage:"intro",icon:"➕",name:"Suma de números naturales y enteros",desc:"Sumas con y sin llevadas",lesson:"Para sumar, organiza las cifras por valor posicional. Con números enteros, recuerda que sumar un número negativo equivale a restar.",example:"Ejemplo: 248 + 137 = 385."},
+{id:"sub",stage:"intro",icon:"➖",name:"Resta de números naturales y enteros",desc:"Préstamos y signos",lesson:"Alinea unidades, decenas y centenas. Con enteros, restar un número negativo equivale a sumar su opuesto.",example:"Ejemplo: 502 − 178 = 324; y 7 − (−3) = 10."},
+{id:"mul",stage:"intro",icon:"✖️",name:"Multiplicación",desc:"Tablas y multiplicaciones grandes",lesson:"Multiplicar es sumar grupos iguales. Descompón números cuando sea útil y revisa la posición de cada cifra.",example:"Ejemplo: 23 × 4 = 20×4 + 3×4 = 92."},
+{id:"div",stage:"intro",icon:"➗",name:"División",desc:"División exacta y con residuo",lesson:"Dividir es repartir en partes iguales. Comprueba con divisor × cociente + residuo = dividendo.",example:"Ejemplo: 84 ÷ 7 = 12 porque 12 × 7 = 84."},
+{id:"decadd",stage:"intro",icon:"🔹",name:"Suma y resta con decimales",desc:"Alinear el punto decimal",lesson:"Alinea los puntos decimales y completa con ceros si hace falta. Después suma o resta como con números enteros.",example:"Ejemplo: 12.50 + 3.75 = 16.25."},
+{id:"decmul",stage:"intro",icon:"🔸",name:"Multiplicación con decimales",desc:"Contar cifras decimales",lesson:"Multiplica como si fueran enteros. Al final, coloca el punto decimal contando las cifras decimales totales de los factores.",example:"Ejemplo: 2.5 × 1.2 = 3.00."},
+{id:"decdiv",stage:"intro",icon:"🔢",name:"División con decimales",desc:"Divisor decimal y cociente decimal",lesson:"Si el divisor tiene decimales, mueve el punto en ambos números el mismo número de lugares para convertir el divisor en entero.",example:"Ejemplo: 7.2 ÷ 0.6 = 72 ÷ 6 = 12."},
+{id:"frac",stage:"intro",icon:"🍰",name:"Fracciones",desc:"Equivalentes y operaciones",lesson:"Una fracción representa partes de un todo. Para sumar o restar, usa denominador común; para multiplicar, multiplica numeradores y denominadores.",example:"Ejemplo: 1/2 + 1/4 = 3/4."},
+{id:"percent",stage:"intro",icon:"💯",name:"Porcentajes y proporciones",desc:"Regla de tres y descuentos",lesson:"Un porcentaje es una razón con base 100. Para calcular p% de una cantidad, multiplica la cantidad por p/100.",example:"Ejemplo: 15% de 200 = 0.15 × 200 = 30."},
+{id:"powers",stage:"intro",icon:"⚡",name:"Potencias y raíces",desc:"Exponentes y raíz cuadrada",lesson:"Una potencia indica multiplicación repetida. La raíz cuadrada busca el número que, multiplicado por sí mismo, da el radicando.",example:"Ejemplo: 3² = 9 y √81 = 9."}
+];
+const semesters=[
+{id:"s1",stage:"sem1",icon:"📘",name:"Primer semestre",desc:"Lenguaje algebraico y números reales",lesson:"El álgebra usa letras para representar cantidades. Simplifica términos semejantes y respeta la jerarquía de operaciones: paréntesis, potencias, multiplicación/división, suma/resta.",example:"Ejemplo: 2x + 3x − 4 = 5x − 4."},
+{id:"s2",stage:"sem2",icon:"📗",name:"Segundo semestre",desc:"Ecuaciones, productos notables y funciones",lesson:"Una ecuación es una igualdad con incógnitas. Para resolverla, conserva la igualdad haciendo la misma operación en ambos lados.",example:"Ejemplo: 4x − 8 = 12 → 4x = 20 → x = 5."},
+{id:"s3",stage:"sem3",icon:"📙",name:"Tercer semestre",desc:"Geometría, trigonometría y medición",lesson:"La trigonometría relaciona los lados y ángulos de triángulos. En triángulos rectángulos: seno = opuesto/hipotenusa, coseno = adyacente/hipotenusa.",example:"Ejemplo: si opuesto=3 e hipotenusa=5, seno=0.6."},
+{id:"s4",stage:"sem4",icon:"📕",name:"Cuarto semestre",desc:"Geometría analítica y funciones",lesson:"La pendiente entre dos puntos es m=(y₂−y₁)/(x₂−x₁). La distancia entre puntos se calcula usando el teorema de Pitágoras.",example:"Ejemplo: entre (1,2) y (3,6), m=4/2=2."},
+{id:"s5",stage:"sem5",icon:"📒",name:"Quinto semestre",desc:"Probabilidad, estadística y variación",lesson:"La media es la suma de datos entre su cantidad. La probabilidad clásica es casos favorables/casos posibles. Analiza siempre el contexto de los datos.",example:"Ejemplo: media de 4, 6 y 8 = 6."},
+{id:"s6",stage:"sem6",icon:"🎓",name:"Sexto semestre",desc:"Precálculo, límites y cálculo introductorio",lesson:"El cálculo estudia el cambio. La derivada representa una tasa de cambio instantánea. Para potencias, d(xⁿ)/dx = n·xⁿ⁻¹.",example:"Ejemplo: si f(x)=x², entonces f'(x)=2x."}
+];
+const all=[...basics,...semesters];
+let raw={};try{raw=JSON.parse(localStorage.getItem(KEY)||"{}")}catch{}
+let state={points:raw.points||0,correct:raw.correct||0,streak:raw.streak||0,last:raw.last||"",byTopic:raw.byTopic||{},diagDone:!!raw.diagDone,diagScore:raw.diagScore||0,recommended:raw.recommended||"sum",selected:raw.selected||"sum",qnum:1,q:null,checked:false};
+function persist(){localStorage.setItem(KEY,JSON.stringify({points:state.points,correct:state.correct,streak:state.streak,last:state.last,byTopic:state.byTopic,diagDone:state.diagDone,diagScore:state.diagScore,recommended:state.recommended,selected:state.selected}));}
+function current(){return all.find(x=>x.id===state.selected)||basics[0]}
+function show(id){$(id).classList.remove("hidden")}
+function hide(id){$(id).classList.add("hidden")}
+$("dateLabel").textContent=new Date().toLocaleDateString("es-MX",{weekday:"short",day:"numeric",month:"short"});
+const diag=[
+["18 + 27",45],["93 − 48",45],["12 × 7",84],["96 ÷ 8",12],["14.6 + 2.35",16.95],["20.5 − 8.75",11.75],["2.4 × 1.5",3.6],["8.4 ÷ 0.7",12],["1/2 + 1/4",.75],["25% de 80",20],["3² + 4",13],["Resuelve: x + 9 = 17",8],["Área de rectángulo: base 6, altura 4",24],["Media de 2, 4 y 6",4],["Si y=2x+1, ¿y cuando x=3?",7]
+];
+let di={i:0,score:0,locked:false};
+function startDiag(){hide("welcome");show("diagnostic");showDiagQ();}
+function showDiagQ(){let q=diag[di.i];$("diagQuestion").textContent=q[0]+" = ?";$("diagCount").textContent=`Pregunta ${di.i+1} de ${diag.length}`;$("diagBar").style.width=(di.i/diag.length*100)+"%";$("diagAnswer").value="";$("diagFeedback").textContent="";$("diagCheck").disabled=false;$("diagNext").disabled=true;di.locked=false;}
+$("startDiagnostic").onclick=startDiag;
+$("diagCheck").onclick=()=>{if(di.locked)return;let val=$("diagAnswer").value;if(val===""){$("diagFeedback").textContent="Escribe una respuesta para continuar.";return;}di.locked=true;let ok=Math.abs(Number(val)-diag[di.i][1])<.011;if(ok){di.score++;$("diagFeedback").textContent="¡Correcto! ✨";$("diagFeedback").style.color="var(--good)";}else{$("diagFeedback").textContent=`La respuesta esperada es ${diag[di.i][1]}. No pasa nada, esto nos ayuda a elegir qué repasar.`;$("diagFeedback").style.color="var(--bad)";}$("diagCheck").disabled=true;$("diagNext").disabled=false;};
+$("diagAnswer").addEventListener("keydown",e=>{if(e.key==="Enter")$("diagCheck").click();});
+$("diagNext").onclick=()=>{di.i++;if(di.i<diag.length)showDiagQ();else finishDiag();};
+function finishDiag(){
+ state.diagDone=true;state.diagScore=di.score;
+ let pct=Math.round(di.score/diag.length*100), band=pct<40?"Refuerzo inicial":pct<70?"Bases en construcción":"Buen dominio inicial";
+ let rec=pct<40?"sum":pct<70?"decadd":"frac";state.recommended=rec;state.selected=rec;persist();
+ hide("diagnostic");show("diagnosticResult");$("diagScore").textContent=`${di.score}/${diag.length}`;$("diagPercent").textContent=pct+"%";$("diagBand").textContent=band;
+ $("diagAdvice").textContent=pct<40?"Te recomendamos comenzar con las operaciones básicas y avanzar con calma. Es una excelente oportunidad para fortalecer tus bases.":pct<70?"Ya tienes algunas herramientas. Te recomendamos reforzar decimales, fracciones y porcentajes antes de avanzar a los temas semestrales.":"¡Tienes una buena base! Te sugerimos repasar fracciones y porcentajes y después avanzar a los temas de preparatoria. Puedes volver a cualquier tema cuando quieras.";
+}
+$("goToRoute").onclick=()=>{hide("diagnosticResult");show("learning");show("study");renderTopics();loadTopic(state.recommended);};
+function renderTopics(){
+ let box=$("topicList");box.innerHTML="";
+ const groups=[["intro","🌷 Introducción · Nivelación",basics],["sem1","📘 Primer semestre",semesters.slice(0,1)],["sem2","📗 Segundo semestre",semesters.slice(1,2)],["sem3","📙 Tercer semestre",semesters.slice(2,3)],["sem4","📕 Cuarto semestre",semesters.slice(3,4)],["sem5","📒 Quinto semestre",semesters.slice(4,5)],["sem6","🎓 Sexto semestre",semesters.slice(5,6)]];
+ groups.forEach(([key,label,items])=>{let heading=document.createElement("div");heading.className="small";heading.style.gridColumn="1/-1";heading.style.fontWeight="900";heading.style.marginTop="8px";heading.textContent=label;box.append(heading);
+ items.forEach(t=>{let b=document.createElement("button");b.className="topic"+(t.id===state.selected?" active":"");let disabled=key!=="intro"&&!state.diagDone;b.disabled=disabled;b.innerHTML=`<strong>${t.icon} ${t.name}</strong><small>${t.desc}${disabled?" · Completa el diagnóstico":""}</small>`;b.onclick=()=>loadTopic(t.id);box.append(b);});});
+}
+function renderStats(){let total=Object.values(state.byTopic).reduce((a,b)=>a+b,0);$("points").textContent=state.points;$("correct").textContent=state.correct;$("streak").textContent=state.streak;$("progressText").textContent=state.diagDone?`${state.diagScore}/15 diagnóstico`:"Diagnóstico pendiente";$("progressBar").style.width=state.diagDone?(state.diagScore/15*100)+"%":"0%";$("stageName").textContent=state.diagDone?"Ruta personalizada · Nivelación y semestres":"Introducción: diagnóstico";$("routeMessage").textContent=state.diagDone?`Diagnóstico completado. Tienes ${total} ejercicios correctos en tu práctica.`:"Comienza con una evaluación diagnóstica para conocer tu punto de partida.";$("summary").textContent=`Diagnóstico: ${state.diagDone?state.diagScore+"/15":"pendiente"} · ${total} ejercicios correctos · ${state.points} puntos.`;}
+function loadTopic(id){state.selected=id;state.qnum=1;renderTopics();show("study");let t=current();$("topicDescription").textContent=`${t.icon} ${t.name}: ${t.desc}`;$("lessonTitle").textContent=t.name;$("lessonText").textContent=t.lesson;$("lessonExample").textContent=t.example;makeQ();$("practiceTab").click();}
+function makeQ(){
+ let id=state.selected,a,b,c,ans,expr;
+ if(id==="sum"){a=r(10,999);b=r(10,999);ans=a+b;expr=`${a} + ${b}`;}
+ if(id==="sub"){a=r(50,999);b=r(1,a);ans=a-b;expr=`${a} − ${b}`;}
+ if(id==="mul"){a=r(2,99);b=r(2,12);ans=a*b;expr=`${a} × ${b}`;}
+ if(id==="div"){b=r(2,12);ans=r(2,20);a=b*ans;expr=`${a} ÷ ${b}`;}
+ if(id==="decadd"){a=+(r(100,999)/10).toFixed(1);b=+(r(10,999)/100).toFixed(2);ans=+(a+b).toFixed(2);expr=`${a} + ${b}`;}
+ if(id==="decsub"){a=+(r(200,999)/10).toFixed(1);b=+(r(10,Math.floor(a*100))/100).toFixed(2);ans=+(a-b).toFixed(2);expr=`${a} − ${b}`;}
+ if(id==="decmul"){a=[1.2,2.5,3.4,0.5][r(0,3)];b=[1.5,2.2,0.4,3.0][r(0,3)];ans=+(a*b).toFixed(2);expr=`${a} × ${b}`;}
+ if(id==="decdiv"){b=[0.2,0.4,0.5,0.6,0.8][r(0,4)];ans=r(2,20);a=+(b*ans).toFixed(2);expr=`${a} ÷ ${b}`;}
+ if(id==="frac"){let den=[2,3,4,5,8,10][r(0,5)],n=r(1,den-1);ans=+(n/den).toFixed(2);expr=`Convierte ${n}/${den} a decimal (redondea a 2 cifras)`;}
+ if(id==="percent"){a=r(2,25)*4;b=r(2,20)*5;ans=+(a/100*b).toFixed(2);expr=`¿Cuánto es ${a}% de ${b}?`;}
+ if(id==="powers"){a=r(2,12);b=r(2,3);ans=Math.pow(a,b);expr=`${a} elevado a ${b}`;}
+ if(id==="s1"){a=r(2,8);b=r(1,12);ans=a*2+b;expr=`Simplifica y evalúa 2x + ${b} cuando x = ${a}`;}
+ if(id==="s2"){a=r(2,9);b=r(1,12);ans=a;expr=`Resuelve: ${a}x − ${b} = ${a*a-b}`;}
+ if(id==="s3"){a=r(3,8);b=r(3,8);ans=a*b/2;expr=`Área de triángulo con base ${a} y altura ${b} (puede tener .5)`;}
+ if(id==="s4"){a=r(1,6);b=r(1,6);ans=a;expr=`Pendiente entre (0, ${b}) y (2, ${b+2*a})`;}
+ if(id==="s5"){a=r(1,10);b=r(1,10);c=r(1,10);ans=+( (a+b+c)/3 ).toFixed(2);expr=`Media de ${a}, ${b} y ${c} (2 decimales si hace falta)`;}
+ if(id==="s6"){a=r(2,6);b=r(1,5);ans=2*a*b;expr=`Si f(x) = ${a}x², ¿cuánto vale f'(${b})?`;}
+ state.q={expr,ans};state.checked=false;$("question").textContent=expr+" = ?";$("answer").value="";$("feedback").textContent="";$("solution").classList.add("hidden");$("check").disabled=false;$("next").disabled=true;$("exerciseNo").textContent=`Ejercicio ${state.qnum}`;
+}
+function r(a,b){return Math.floor(Math.random()*(b-a+1))+a}
+$("check").onclick=()=>{if(state.checked)return;let v=$("answer").value;if(v===""){$("feedback").textContent="Escribe tu respuesta primero 🙂";return;}state.checked=true;let ok=Math.abs(Number(v)-state.q.ans)<.011;if(ok){$("feedback").textContent="¡Correcto! ✨ Sumas 10 puntos.";$("feedback").style.color="var(--good)";state.points+=10;state.correct++;state.byTopic[state.selected]=(state.byTopic[state.selected]||0)+1;if(state.last!==today()){let y=new Date(Date.now()-86400000).toISOString().slice(0,10);state.streak=state.last===y?state.streak+1:1;state.last=today();}persist();}else{$("feedback").textContent="Buen intento. Revisa la explicación y vuelve a probar. 💜";$("feedback").style.color="var(--bad)";}$("solution").textContent=`Respuesta esperada: ${state.q.ans}. ${current().example}`;$("solution").classList.remove("hidden");$("check").disabled=true;$("next").disabled=false;renderStats();};
+$("answer").addEventListener("keydown",e=>{if(e.key==="Enter")$("check").click();});$("next").onclick=()=>{state.qnum++;makeQ();};
+$("practiceTab").onclick=()=>{$("practicePanel").classList.remove("hidden");$("lessonPanel").classList.add("hidden");$("practiceTab").classList.add("active");$("lessonTab").classList.remove("active");};
+$("lessonTab").onclick=()=>{$("practicePanel").classList.add("hidden");$("lessonPanel").classList.remove("hidden");$("lessonTab").classList.add("active");$("practiceTab").classList.remove("active");};
+$("backPractice").onclick=()=>$("practiceTab").click();
+$("reset").onclick=()=>{if(confirm("¿Borrar todo el progreso de este dispositivo?")){localStorage.removeItem(KEY);location.reload();}};
+function updateHabits(){$("habitCount").textContent=`${[...document.querySelectorAll(".habit")].filter(x=>x.checked).length} de 4 completados`;}
+document.querySelectorAll(".habit").forEach(x=>x.onchange=updateHabits);
+let hk="matepastel-routine-"+today();try{let arr=JSON.parse(localStorage.getItem(hk)||"[]");document.querySelectorAll(".habit").forEach((x,i)=>x.checked=!!arr[i]);}catch{}updateHabits();
+$("saveHabit").onclick=()=>{localStorage.setItem(hk,JSON.stringify([...document.querySelectorAll(".habit")].map(x=>x.checked)));$("saveHabit").textContent="¡Guardado! ✓";setTimeout(()=>$("saveHabit").textContent="Guardar rutina",1200);};
+if(state.diagDone){hide("welcome");hide("diagnostic");hide("diagnosticResult");show("learning");show("study");renderTopics();loadTopic(state.selected);}renderStats();
+if("serviceWorker"in navigator&&(location.protocol==="https:"||location.hostname==="localhost"))addEventListener("load",()=>navigator.serviceWorker.register("./sw.js").catch(()=>{}));
+})();
+</script></body></html>

@@ -1,0 +1,9 @@
+{
+  "name": "MatePastel - Ruta de matemáticas",
+  "short_name": "MatePastel",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#fff9fc",
+  "theme_color": "#f5e4f2",
+  "description": "Diagnóstico, nivelación y ruta de matemáticas para bachillerato."
+}

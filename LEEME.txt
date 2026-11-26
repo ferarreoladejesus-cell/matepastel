@@ -1,0 +1,23 @@
+MATEPASTEL — RUTA DE MATEMÁTICAS DE MEDIA SUPERIOR
+
+Incluye:
+- Diagnóstico inicial de 15 reactivos con operaciones básicas, decimales, fracciones, porcentajes, potencias, álgebra, geometría, estadística y funciones.
+- Recomendación de punto de partida según el resultado (no es una calificación escolar).
+- Introducción/nivelación: suma, resta, multiplicación, división, suma y resta decimal, multiplicación y división decimal, fracciones, porcentajes, potencias y raíces.
+- Ruta organizada por seis semestres, con contenidos representativos.
+- Práctica interactiva, verificación, explicaciones breves, puntos, racha y rutina diaria.
+- Guardado local en el navegador y caché para uso sin conexión tras la primera visita en HTTPS.
+
+IMPORTANTE:
+Los contenidos de matemáticas cambian según el subsistema, el plantel y el programa oficial. La organización semestral es una ruta orientativa que debe ajustarse al plan de estudios correspondiente. La versión actual es una base didáctica inicial, no cubre exhaustivamente cada tema ni sustituye clases y materiales oficiales.
+
+PUBLICAR Y COMPARTIR:
+1. Descomprime el ZIP.
+2. Crea un repositorio público en GitHub.
+3. Sube index.html, manifest.json y sw.js a la raíz.
+4. En Settings > Pages, activa publicación desde la rama principal y carpeta root.
+5. Comparte el enlace HTTPS generado. Cada usuario debe abrirlo una vez con internet para que se almacene la caché.
+También puedes probar en local con `python -m http.server 8000` y abrir `http://localhost:8000`.
+
+DATOS:
+El progreso queda guardado en el dispositivo/navegador de cada estudiante. No hay cuentas, sincronización ni panel docente. Para eso se necesita backend, base de datos y autenticación.
